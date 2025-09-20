@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&display=swap');
+
+:root {
+  --warna-coklat-tua: #2A1E1A;
+  --warna-emas-tua: #D9A24D;
+  --warna-emas-muda: #EED2A4;
+  --warna-coklat-gelap: #1E1613;
+  
+  /* Secondary Colors */
+  --warna-abu-hangat: #A09D8D;
+  --warna-krem-gelap: #E0EFF6;
+  --warna-krem-terang: #FFF4E7;
+  --warna-putih-pudar: #F0EFE7;
+}
+
+body {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400; /* Regular */
+  color: var(--warna-emas-tua);
+  /* Ukuran font dasar */
+  font-size: 1.25rem; /* 16px */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 700; /* Bold */
+  color: var(--warna-emas-muda);
+}
+
+h1 {
+  /* Ukuran font untuk desktop, tablet, dan mobile */
+  font-size: 3rem;   /* Desktop: 48px */
+}
+
+h2 {
+  font-weight: 500; /* Medium */
+  font-size: 2.5rem; /* Desktop: 40px */
+}
+
+h3 {
+  font-size: 2rem;   /* Desktop: 32px */
+}
+
+h4 {
+  font-size: 1.5rem;   /* Desktop: 24px */
+}
+
+h5 {
+  font-size: 1.25rem;  /* Desktop: 20px */
+}
+
+h6 {
+  font-size: 1rem;     /* Desktop: 16px */
+}
+
+/* Responsivitas untuk layar tablet */
+@media (max-width: 1024px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.75rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.1rem; }
+  h6 { font-size: 0.9rem; }
+}
+
+/* Responsivitas untuk layar mobile */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.1rem; }
+  h5 { font-size: 1rem; }
+  h6 { font-size: 0.8rem; }
+}
