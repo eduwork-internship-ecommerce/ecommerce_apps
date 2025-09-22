@@ -19,5 +19,6 @@
 @endphp
 <x-main-layout>
     <x-hero :slides="$heroSlides" />
+    <x-product-card :paginatedProducts="$paginatedProducts" />
    <x-contact-us />
 </x-main-layout>
