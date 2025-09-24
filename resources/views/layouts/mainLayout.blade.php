@@ -17,7 +17,7 @@
 </head>
 
 <body class="bg-white text-black antialiased">
-    <x-header />
+    <x-user.navbar />
 
 
     <main>
