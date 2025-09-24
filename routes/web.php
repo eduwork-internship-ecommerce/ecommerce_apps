@@ -4,9 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductDummyController;
 use App\Http\Controllers\ProductController;
 
-Route::get('/', function () {
-    return view('index');
-});
 
 Route::get('/home', [ProductDummyController::class, 'index'])->name('home');
 
