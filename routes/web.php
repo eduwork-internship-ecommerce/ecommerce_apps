@@ -3,11 +3,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductDummyController;
 
-Route::get('/', function () {
-    return view('index');
-});
 
-Route::get('/home', [ProductDummyController::class, 'index'])->name('home');
+Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

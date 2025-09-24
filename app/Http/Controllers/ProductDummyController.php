@@ -93,7 +93,7 @@ class ProductDummyController extends Controller
         ];
         $paginatedProducts = $this->paginateArray($products, 4, $request->input('page'));
 
-        return view('home',  compact('paginatedProducts', 'bgColors'));
+        return view('userPage.home',  compact('paginatedProducts', 'bgColors'));
     }
 }
 

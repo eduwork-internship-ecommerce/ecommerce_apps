@@ -25,7 +25,7 @@
                         <p class="font-light mb-8 drop-shadow-md"
                             x-text="slide.description"></p>
                         <a href="#" class="inline-block bg-amber-500 text-gray-900 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-amber-400 transition-colors duration-300">
-                            Pelajari Selengkapnya
+                            Lihat Produk
                         </a>
                     </div>
                 </div>
