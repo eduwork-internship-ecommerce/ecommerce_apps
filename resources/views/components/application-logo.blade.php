@@ -1,0 +1,1 @@
+<img src="{{ asset('images/honey-mart-logo.png') }}" alt="App Logo" {{ $attributes }}>
