@@ -5,7 +5,7 @@
   --dark-gold: #D9A24D;
   --light-gold: #EED2A4;
   --deep-brown: #1E1613;
-  
+  /* text-[var(--deep-brown)] */
   /* Secondary Colors */
   --warm-gray: #A09D8D;
   --dark-cream: #E0EFF6;
