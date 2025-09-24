@@ -18,7 +18,7 @@
 
     <div class="hidden md:flex flex-1 justify-center gap-x-8">
       <a href="{{route('home')}}" class="font-semibold text-[#D9A24D] border-b-2 border-[#D9A24D]">Beranda</a>
-      <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Produk</a>
+      <a href="{{route('products.index')}}" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Produk</a>
       <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Categories</a>
       <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Tentang Kami</a>
       <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Hubungi Kami</a>

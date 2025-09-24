@@ -17,7 +17,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Madu hutan murni, kaya nutrisi dan tanpa campuran.',
                 'category_id' => 1, // pastikan category_id=1 ada (misalnya kategori Madu)
                 'brand' => 'Madu Asli',
-                'image_url' => 'https://via.placeholder.com/300x300.png?text=Madu+Hutan+250ml',
+                'price' => 65000,
+                'image_url' => 'https://picsum.photos/200/300?random=3',
                 'is_active' => true,
             ],
             [
@@ -26,7 +27,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Madu murni dari bunga kelengkeng, rasa manis khas.',
                 'category_id' => 1,
                 'brand' => 'Madu Asli',
-                'image_url' => 'https://via.placeholder.com/300x300.png?text=Madu+Kelengkeng+500ml',
+                'image_url' => 'https://picsum.photos/200/300?random=2',
+                'price' => 65000,
                 'is_active' => true,
             ],
             [
@@ -35,7 +37,8 @@ class ProductSeeder extends Seeder
                 'description' => 'Madu dari berbagai jenis bunga, cocok untuk kesehatan harian.',
                 'category_id' => 1,
                 'brand' => 'Madu Asli',
-                'image_url' => 'https://via.placeholder.com/300x300.png?text=Madu+Multiflora+1L',
+                'image_url' => 'https://picsum.photos/200/300?random=1',
+                'price' => 65000,
                 'is_active' => true,
             ],
         ];
