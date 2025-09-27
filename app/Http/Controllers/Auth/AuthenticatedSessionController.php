@@ -27,7 +27,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        
+        // --- LOGIKA PENGALIHAN DITAMBAHKAN DI SINI ---
+        
+        // 1. Dapatkan pengguna yang baru saja login
+        $user = Auth::user();
 
+        // 2. Cek peran pengguna
+        if ($user && $user->role === 'admin') {
+            // Arahkan admin ke halaman /admin
+            return redirect()->intended('/admin');
+        }
+
+        // 3. Pengguna biasa diarahkan ke rute 'home' default
         return redirect()->intended(route('home', absolute: false));
     }
 
