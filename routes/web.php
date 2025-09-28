@@ -3,6 +3,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductDummyController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Admin\DashboardController;
 
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
@@ -26,9 +27,8 @@ Route::middleware('auth')->group(function () {
 
 // Route Admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
     Route::resource('/products', AdminProductController::class);
 });

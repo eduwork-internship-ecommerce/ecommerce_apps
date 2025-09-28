@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <x-header />
+        <x-user.navbar />
         <div class="flex flex-row max-w-[1440px] w-full mx-auto md:justify-between items-center justify-center">
             <div class="image-container hidden md:flex w-1/2">
                 <img src="images/auth/auth_image.png" alt="" width="800">
