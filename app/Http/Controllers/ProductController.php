@@ -34,12 +34,12 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Product::select('brand')->distinct()->pluck('brand');
 
-        return view('products.index', compact('products', 'categories', 'brands'));
+        return view('userPage.products.index', compact('products', 'categories', 'brands'));
     }
 
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
-        return view('products.show', compact('product'));
+        return view('userPage.products.show', compact('product'));
     }
 }
