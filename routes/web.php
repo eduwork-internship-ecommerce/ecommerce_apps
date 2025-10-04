@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\UserController;
 
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->name('dashboard');
 
     Route::resource('/products', AdminProductController::class);
+    Route::resource('/users', UserController::class);
 });
 
 
