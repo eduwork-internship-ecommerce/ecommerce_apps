@@ -1,4 +1,4 @@
-<footer class="bg-[var(--dark-brown)] text-[var(--light-gold)] py-6 md:py-12">
+<footer class="footer: bg-[#2A1E1A] text-[#EED2A4] py-6 md:py-12">
     <div class="container mx-auto px-4 md:px-8 lg:px-16 grid grid-cols-1 md:grid-cols-8 gap-4">
         <div class="md:col-span-2">
             <div class="flex items-center mb-4">
