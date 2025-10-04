@@ -38,7 +38,7 @@
             <nav class="space-y-2 p-4 flex-1">
                 <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Dasbor</a>
                 <a href="{{ route('admin.products.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Produk</a>
-                <a href="#" class="block px-3 py-2 hover:bg-gray-700 rounded">Pelanggan</a>
+                <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Pelanggan</a>
                 <a href="#" class="block px-3 py-2 hover:bg-gray-700 rounded">Laporan</a>
             </nav>
 
