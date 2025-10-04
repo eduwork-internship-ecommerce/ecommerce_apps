@@ -27,6 +27,13 @@
                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" required>
     </div>
 
+    {{-- Slug --}}
+    <div>
+        <label class="block font-semibold text-gray-700">Slug</label>
+        <input type="text" name="slug" value="{{ old('slug', $product->slug) }}"
+               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" required>
+    </div>
+
     <!-- Brand -->
     <div>
         <label class="block font-semibold text-gray-700">Brand</label>
@@ -78,7 +85,7 @@
                      class="w-32 h-32 object-cover rounded-md border">
             </div>
         @endif
-        <input type="file" name="image"
+        <input type="file" name="image_url"
                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2">
         <p class="text-sm text-gray-500 mt-1">Upload file baru jika ingin mengganti gambar.</p>
     </div>
