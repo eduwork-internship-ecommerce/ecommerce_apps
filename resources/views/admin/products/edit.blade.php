@@ -75,20 +75,20 @@
         <textarea name="description" rows="4"
                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2">{{ old('description', $product->description) }}</textarea>
     </div>
-
     <!-- Image -->
     <div>
-        <label class="block font-semibold text-gray-700">Product Image</label>
-        @if($product->image_url)
-            <div class="mb-3">
-                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" 
-                     class="w-32 h-32 object-cover rounded-md border">
-            </div>
-        @endif
-        <input type="file" name="image_url"
-               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2">
-        <p class="text-sm text-gray-500 mt-1">Upload file baru jika ingin mengganti gambar.</p>
-    </div>
+    <label for="image">Current Image</label>
+    @if ($product->image_url)
+        <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" width="150">
+    @else
+        <p>No image uploaded.</p>
+    @endif
+</div>
+
+<div class="mt-4">
+    <label for="new_image">Upload New Image (optional)</label>
+    <input type="file" name="image" id="new_image">
+</div>
 
     <!-- Submit -->
     <div class="flex justify-end">

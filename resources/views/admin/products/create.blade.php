@@ -24,12 +24,7 @@
                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" required>
     </div>
     
-    {{-- Slug --}}
-    <div>
-        <label class="block font-semibold text-gray-700">Slug</label>
-        <input type="text" name="slug" value="{{ old('slug') }}"
-               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" required>
-    </div>
+
 
     <!-- Brand -->
     <div>
@@ -74,8 +69,8 @@
 
     <!-- Image -->
     <div>
-        <label class="block font-semibold text-gray-700">Product Image</label>
-        <input type="file" name="image_url"
+        <label class="block font-semibold text-gray-700" for="image">Product Image</label>
+        <input type="file" name="image" id="image"
                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2">
     </div>
 

@@ -45,7 +45,7 @@
         @forelse($products as $product)
             <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex flex-col">
                 <div class="w-full h-48 overflow-hidden rounded-lg mb-4">
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" 
+                    <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" 
                          class="w-full h-full object-cover hover:scale-105 transition">
                 </div>
                 <h5 class="text-lg font-semibold mb-2">{{ $product->name }}</h5>

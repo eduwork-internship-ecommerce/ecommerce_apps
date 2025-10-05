@@ -45,7 +45,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::resource('/products', AdminProductController::class);
+    Route::resource('/products', AdminProductController::class)->except(['show']);
 });
 
 

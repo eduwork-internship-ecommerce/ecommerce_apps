@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Storage; // HANYA GUNAKAN INI
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -44,64 +44,32 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'slug'        => 'required|string|unique:products|max:255',
-            'price'       => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'brand'       => 'nullable|string|max:255',
-            'stock'       => 'nullable|integer|min:0',
-            'image_url'   => 'nullable|file|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'name' => 'required|string|max:255',
+            'brand' => 'nullable|string|max:255', // Validasi untuk brand
             'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $data = $request->only(['name', 'slug', 'price', 'category_id', 'brand', 'stock', 'description']);
-
-        // ✅ Upload ke Cloudinary
-        if ($request->hasFile('image_url')) {
-            try {
-                $uploadResult = Cloudinary::upload(
-                    $request->file('image_url')->getRealPath(),
-                    [
-                        'folder' => 'products',
-                        'resource_type' => 'image',
-                        'transformation' => [
-                            'width' => 800,
-                            'height' => 800,
-                            'crop' => 'limit',
-                            'quality' => 'auto'
-                        ]
-                    ]
-                );
-
-                $data['image_url'] = $uploadResult->getSecurePath(); // aman
-            } catch (\Exception $e) {
-                return redirect()->back()
-                    ->withErrors(['image_url' => 'Gagal mengupload gambar: ' . $e->getMessage()])
-                    ->withInput();
-            }
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        try {
-            $product = Product::create($data);
+        Product::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name), // Buat slug secara otomatis
+            'brand' => $request->brand, // Simpan brand
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'image_url' => $imagePath,
+        ]);
 
-            Log::info('Product created successfully', [
-                'id' => $product->id,
-                'name' => $product->name,
-                'image_url' => $product->image_url
-            ]);
-
-            return redirect()->route('admin.products.index')
-                ->with('success', 'Produk berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            Log::error('Product creation failed', [
-                'error' => $e->getMessage(),
-                'data' => $data
-            ]);
-
-            return redirect()->back()
-                ->withErrors(['error' => 'Gagal menyimpan produk: ' . $e->getMessage()])
-                ->withInput();
-        }
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
 
     public function edit(Product $product)
@@ -113,52 +81,48 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'slug'        => 'required|string|unique:products,slug,' . $product->id . '|max:255',
-            'price'       => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'brand'       => 'nullable|string|max:255',
-            'stock'       => 'nullable|integer|min:0',
-            'image_url'   => 'nullable|file|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'category_id' => 'required|exists:categories,id', // Sebaiknya tambahkan validasi untuk kategori
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $data = $request->only(['name', 'slug', 'price', 'category_id', 'brand', 'stock', 'description']);
+        $imagePath = $product->image_url;
 
-        // ✅ Upload ulang kalau ada file baru
-        if ($request->hasFile('image_url')) {
-            try {
-                $uploadResult = Cloudinary::upload(
-                    $request->file('image_url')->getRealPath(),
-                    [
-                        'folder' => 'products',
-                        'resource_type' => 'image',
-                        'transformation' => [
-                            'width' => 800,
-                            'height' => 800,
-                            'crop' => 'limit',
-                            'quality' => 'auto'
-                        ]
-                    ]
-                );
-
-                $data['image_url'] = $uploadResult->getSecurePath();
-            } catch (\Exception $e) {
-                return redirect()->back()
-                    ->withErrors(['image_url' => 'Gagal mengupload gambar: ' . $e->getMessage()])
-                    ->withInput();
-            }
+if ($request->hasFile('image')) {
+        // Hapus file lama jika ada dan file benar-benar ada di storage
+        if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
+            Storage::disk('public')->delete($product->image_url);
         }
 
-        $product->update($data);
+        // Simpan file baru
+        $imagePath = $request->file('image')->store('products', 'public');
+    }
 
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Produk berhasil diperbarui.');
+        $product->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'image_url' => $imagePath,
+        ]);
+
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Product $product)
     {
+        // Hapus gambar jika ada
+        if ($product->image_url) {
+    Storage::disk('public')->delete($product->image_url);
+}
+
+        // Hapus data produk dari database
         $product->delete();
+        
         return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil dihapus.');
     }
