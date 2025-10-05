@@ -18,7 +18,8 @@ class ProductSeeder extends Seeder
                 'category_id' => 1, // pastikan category_id=1 ada (misalnya kategori Madu)
                 'brand' => 'Madu Asli',
                 'price' => 65000,
-                'image_url' => 'https://picsum.photos/200/300?random=3',
+                'stock' => 10,
+                'image_url' => 'products/madu1.jpg',
                 'is_active' => true,
             ],
             [
@@ -27,8 +28,9 @@ class ProductSeeder extends Seeder
                 'description' => 'Madu murni dari bunga kelengkeng, rasa manis khas.',
                 'category_id' => 1,
                 'brand' => 'Madu Asli',
-                'image_url' => 'https://picsum.photos/200/300?random=2',
+                'image_url' => 'products/madu2.jpg',
                 'price' => 65000,
+                'stock' => 10,
                 'is_active' => true,
             ],
             [
@@ -37,8 +39,9 @@ class ProductSeeder extends Seeder
                 'description' => 'Madu dari berbagai jenis bunga, cocok untuk kesehatan harian.',
                 'category_id' => 1,
                 'brand' => 'Madu Asli',
-                'image_url' => 'https://picsum.photos/200/300?random=1',
+                'image_url' => 'products/madu3.jpg',
                 'price' => 65000,
+                'stock' => 10,
                 'is_active' => true,
             ],
         ];

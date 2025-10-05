@@ -93,7 +93,7 @@
                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
                 <td class="px-6 py-4">
                     @if($product->image_url)
-                        <img src="{{ $product->image_url }}" 
+                        <img src="{{ asset('storage/' . $product->image_url) }}" 
                              alt="{{ $product->name }}" 
                              class="w-16 h-16 object-cover rounded-md border">
                     @else

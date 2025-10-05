@@ -6,7 +6,7 @@
 <div class="max-w-6xl mx-auto px-4 py-10">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div class="bg-white rounded-2xl shadow-md p-5">
-            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-[400px] object-cover rounded-lg">
+            <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" class="w-full h-[400px] object-cover rounded-lg">
         </div>
 
         <div class="flex flex-col justify-center">

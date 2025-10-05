@@ -6,39 +6,34 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; // HANYA GUNAKAN INI
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
-{
-    // Ambil kategori & brand untuk filter di form
-    $categories = Category::all();
-    $brands = Product::select('brand')->distinct()->pluck('brand');
+    {
+        $categories = Category::all();
+        $brands = Product::select('brand')->distinct()->pluck('brand');
 
-    // Mulai query
-    $query = Product::with('category');
+        $query = Product::with('category');
 
-    // 🔍 Search by name
-    if ($request->filled('search')) {
-        $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        $products = $query->paginate(10)->appends($request->query());
+
+        return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
-
-    // 🎯 Filter by category
-    if ($request->filled('category_id')) {
-        $query->where('category_id', $request->category_id);
-    }
-
-    // 🏷️ Filter by brand
-    if ($request->filled('brand')) {
-        $query->where('brand', $request->brand);
-    }
-
-    // Pagination (tetap simpan query agar filter tidak hilang saat pindah halaman)
-    $products = $query->paginate(10)->appends($request->query());
-
-    return view('admin.products.index', compact('products', 'categories', 'brands'));
-}
-
 
     public function create()
     {
@@ -49,18 +44,32 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:products',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'brand' => 'nullable|string',
-            'image_url' => 'nullable|url',
+            'name' => 'required|string|max:255',
+            'brand' => 'nullable|string|max:255', // Validasi untuk brand
             'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        Product::create($request->all());
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
+        Product::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name), // Buat slug secara otomatis
+            'brand' => $request->brand, // Simpan brand
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'image_url' => $imagePath,
+        ]);
+
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
 
     public function edit(Product $product)
@@ -72,23 +81,49 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:products,slug,' . $product->id,
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'brand' => 'nullable|string',
-            'image_url' => 'nullable|url',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'category_id' => 'required|exists:categories,id', // Sebaiknya tambahkan validasi untuk kategori
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $product->update($request->all());
+        $imagePath = $product->image_url;
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+if ($request->hasFile('image')) {
+        // Hapus file lama jika ada dan file benar-benar ada di storage
+        if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
+            Storage::disk('public')->delete($product->image_url);
+        }
+
+        // Simpan file baru
+        $imagePath = $request->file('image')->store('products', 'public');
+    }
+
+        $product->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'image_url' => $imagePath,
+        ]);
+
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Product $product)
     {
+        // Hapus gambar jika ada
+        if ($product->image_url) {
+    Storage::disk('public')->delete($product->image_url);
+}
+
+        // Hapus data produk dari database
         $product->delete();
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
+        
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produk berhasil dihapus.');
     }
 }
