@@ -9,7 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\AdminCategoryController;
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -48,6 +48,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('/users', UserController::class);
     Route::resource('/products', AdminProductController::class)->except(['show']);
+    Route::resource('/categories', AdminCategoryController::class);
 });
 
 
