@@ -62,7 +62,7 @@
                 <div class="flex justify-end space-x-3 pt-2 border-t">
                     @if ($showPaymentButton)
                     {{-- Tombol Lanjutkan Pembayaran (Hanya jika pending/unpaid) --}}
-                    <a href="#"
+                    <a href="{{ route('payment.continue', $order->code) }}"
                         class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                         Lanjutkan Pembayaran
                     </a>

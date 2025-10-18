@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'create')->name('create'); // Menampilkan Form Checkout
     });
     Route::get('/order-history', [HistoryController::class,'index'])->name('order.history');
+        // Rute untuk Lanjutkan Pembayaran (dari riwayat pesanan)
+    Route::get('/payment/continue/{order_code}', [OrderController::class, 'continuePayment'])
+        ->name('payment.continue');
 });
 
 // Route Admin
