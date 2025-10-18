@@ -1,5 +1,5 @@
       <!-- Settings Dropdown user profile-->
-       @auth
+      @auth
       <div class="hidden sm:flex sm:items-center sm:ms-6">
           <x-dropdown align="right" width="48">
               <x-slot name="trigger">
@@ -23,19 +23,23 @@
               </x-slot>
 
               <x-slot name="content">
-                  <x-dropdown-link :href="route('profile.edit')">
-                      {{ __('Profile') }}
-                  </x-dropdown-link>
+                  <x-responsive-nav-link :href="route('profile.edit')">
+                      {{ __('Profil') }}
+                  </x-responsive-nav-link>
+                  <x-responsive-nav-link :href="route('order.history')">
+                      {{ __('Riwayat Pesanan') }}
+                  </x-responsive-nav-link>
+                  <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
                   <!-- Authentication -->
                   <form method="POST" action="{{ route('logout') }}">
                       @csrf
 
-                      <x-dropdown-link :href="route('logout')"
+                      <x-responsive-nav-link :href="route('logout')"
                           onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                          {{ __('Log Out') }}
-                      </x-dropdown-link>
+                                                this.closest('form').submit();" class="text-red-800">
+                          {{ __('Keluar') }}
+                      </x-responsive-nav-link>
                   </form>
               </x-slot>
           </x-dropdown>

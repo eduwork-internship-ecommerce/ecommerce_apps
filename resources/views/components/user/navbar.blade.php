@@ -59,6 +59,7 @@
         <p class="text-sm text-gray-400">{{ Auth::user()->email }}</p>
       </div>
       <a href="{{ route('profile.edit') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Profil</a>
+      <a href="{{ route('order.history') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Riwayat Pesanan</a>
       <form method="POST" action="{{ route('logout') }}" class="block py-2">
         @csrf
         <button type="submit" class="w-full text-left font-semibold text-red-500 hover:text-red-400 transition-colors duration-200">
