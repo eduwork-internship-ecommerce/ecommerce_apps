@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\HistoryController;
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(OrderController::class)->prefix('checkout')->name('order.')->group(function () {
         Route::get('/', 'create')->name('create'); // Menampilkan Form Checkout
     });
+    Route::get('/order-history', [HistoryController::class,'index'])->name('order.history');
 });
 
 // Route Admin
