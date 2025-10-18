@@ -167,7 +167,7 @@ class OrderController extends Controller
 
         // 4. Redirect ke WhatsApp
         $encodedMessage = urlencode($orderMessage);
-        $phoneNumber = '6289513822017'; // Nomor tujuan WhatsApp
+        $phoneNumber = '6289513800000'; // Nomor tujuan WhatsApp
         $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
 
         return redirect()->away($whatsappUrl);
