@@ -5,14 +5,14 @@
     <div class="text-center mb-12">
         <h2 class="text-4xl md:text-5xl font-playfair font-bold">Popular Products</h2>
     </div>
-
+    
     <div class="relative">
         {{-- The grid classes replace the flex and overflow-x-auto classes --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach ($paginatedProducts as $product)
                 <div class="rounded-xl p-6 flex flex-col {{ $bgColors[$loop->index % count($bgColors)] }}">
                     <div class="flex-grow">
-                        <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="w-full h-48 object-contain mb-5 transition-transform duration-300 ease-in-out hover:scale-110 cursor-pointer">
+                        <img src="{{ asset('storage/' . $product['image']) }}" alt="{{ $product['name'] }}" class="w-full h-48 object-contain mb-5 transition-transform duration-300 ease-in-out hover:scale-110 cursor-pointer">
                         <h3 class="text-xl font-semibold text-gray-800">{{ $product['name'] }}</h3>
                         <p class="font-bold text-gray-800 mb-4">{{ $product['description'] }}</p>
                     </div>

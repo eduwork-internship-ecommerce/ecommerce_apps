@@ -69,6 +69,9 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
     // Anda mungkin perlu menambahkan relasi ke OrderItem (jika ada) dan OrderAddress (jika terpisah)
 }

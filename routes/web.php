@@ -9,7 +9,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\HistoryController;
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(OrderController::class)->prefix('checkout')->name('order.')->group(function () {
         Route::get('/', 'create')->name('create'); // Menampilkan Form Checkout
     });
+    Route::get('/order-history', [HistoryController::class,'index'])->name('order.history');
+        // Rute untuk Lanjutkan Pembayaran (dari riwayat pesanan)
+    Route::get('/payment/continue/{order_code}', [OrderController::class, 'continuePayment'])
+        ->name('payment.continue');
 });
 
 // Route Admin
@@ -46,8 +51,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::resource('/products', AdminProductController::class);
     Route::resource('/users', UserController::class);
+    Route::resource('/products', AdminProductController::class)->except(['show']);
+    Route::resource('/categories', AdminCategoryController::class);
 });
 
 
