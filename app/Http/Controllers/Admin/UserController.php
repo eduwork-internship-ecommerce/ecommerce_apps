@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -37,5 +38,38 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+     public function edit (User $user)
+    {
+        $user = User::find($user->id);
+    }
+public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500', 
+        ]);
+
+        // Update the User 
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        // Get the user's default address
+        $defaultAddress = $user->defaultAddress;
+
+        // Only update the address if one already exists
+        if ($defaultAddress) {
+            $defaultAddress->update([
+                'phone' => $request->phone,
+                'address_line' => $request->address,
+            ]);
+        }
+        
+        return redirect()->back()->with('success', 'User berhasil diperbarui.');
     }
 }
