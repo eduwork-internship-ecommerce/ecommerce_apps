@@ -15,11 +15,12 @@
 
     <h1 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">Konfirmasi Checkout</h1>
 
-    <form id="checkoutForm" method="POST" action="#" class="flex flex-col lg:flex-row gap-8">
+    <form id="checkoutForm" method="POST" action="{{ route('checkout.pay') }}" class="flex flex-col lg:flex-row gap-8">
         @csrf
 
         {{-- Kolom Kiri: Input Data --}}
         <div class="lg:w-2/3 space-y-8">
+
             {{-- Bagian 1: Alamat Pengiriman --}}
             <div class="bg-white p-6 shadow-md rounded-lg border">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">1. Detail Pengiriman 🚚</h2>
@@ -134,7 +135,6 @@
                     </div>
 
                     @php
-                        // Asumsi PPN 11% untuk contoh (dihitung dari subtotal)
                         $taxRate = 0.11;
                         $taxTotal = $subtotal * $taxRate;
                     @endphp
@@ -149,7 +149,7 @@
                     <span>Total Bayar:</span>
                     <span id="grandTotalDisplay" class="text-indigo-600">Rp {{ number_format($subtotal + $taxTotal) }}</span>
                 </div>
-
+                <input type="hidden" name="total" id="totalInput" value="">
                 <button type="submit" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-200">
                     Selesaikan Pembayaran
                 </button>
@@ -158,40 +158,94 @@
     </form>
 </div>
 
+{{-- MIDTRANS SDK --}}
+<script type="text/javascript"
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
+
 <script>
+    const subtotal = {{ $subtotal }};
+    const taxTotal = {{ $taxTotal }};
+
+    const shippingOptions = document.querySelectorAll('.shipping-option');
+    const shippingFeeDisplay = document.getElementById('shippingFeeDisplay');
+    const grandTotalDisplay = document.getElementById('grandTotalDisplay');
+    const totalInput = document.getElementById('totalInput');
+
+    function formatRupiah(number) {
+        return 'Rp ' + number.toLocaleString('id-ID');
+    }
+
+    function calculateGrandTotal() {
+        let selectedFee = 0;
+        const selectedOption = document.querySelector('.shipping-option:checked');
+        if (selectedOption) {
+            selectedFee = parseInt(selectedOption.dataset.fee);
+        }
+        const grandTotal = subtotal + taxTotal + selectedFee;
+        shippingFeeDisplay.textContent = formatRupiah(selectedFee);
+        grandTotalDisplay.textContent = formatRupiah(grandTotal);
+        totalInput.value = grandTotal;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        const subtotal = {{ $subtotal }};
-        const taxTotal = {{ $taxTotal }}; // PPN 11%
-
-        const shippingOptions = document.querySelectorAll('.shipping-option');
-        const shippingFeeDisplay = document.getElementById('shippingFeeDisplay');
-        const grandTotalDisplay = document.getElementById('grandTotalDisplay');
-
-        function formatRupiah(number) {
-            return 'Rp ' + number.toLocaleString('id-ID');
-        }
-
-        function calculateGrandTotal() {
-            let selectedFee = 0;
-            let selectedOption = document.querySelector('.shipping-option:checked');
-
-            if (selectedOption) {
-                selectedFee = parseInt(selectedOption.dataset.fee);
-            }
-            
-            const grandTotal = subtotal + taxTotal + selectedFee;
-
-            shippingFeeDisplay.textContent = formatRupiah(selectedFee);
-            grandTotalDisplay.textContent = formatRupiah(grandTotal);
-        }
-
-        // Jalankan kalkulasi saat halaman dimuat (untuk input yang sudah ter-check oleh old())
         calculateGrandTotal();
-
-        // Tambahkan event listener untuk setiap pilihan pengiriman
         shippingOptions.forEach(option => {
             option.addEventListener('change', calculateGrandTotal);
         });
+    });
+
+    // 🔥 Handler Submit dengan Snap
+    document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        calculateGrandTotal(); // pastikan total terisi
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Gagal membuat transaksi: " + data.error);
+                console.error(data.error);
+                return;
+            }
+
+            if (!data.snapToken) {
+                alert("snapToken tidak ditemukan. Cek server.");
+                console.error(data);
+                return;
+            }
+
+            window.snap.pay(data.snapToken, {
+                onSuccess: function(result) {
+                    alert("Pembayaran Berhasil!");
+                    console.log(result);
+                },
+                onPending: function(result) {
+                    alert("Menunggu Pembayaran...");
+                    console.log(result);
+                },
+                onError: function(result) {
+                    alert("Terjadi Kesalahan!");
+                    console.log(result);
+                },
+                onClose: function() {
+                    alert("Anda menutup popup tanpa menyelesaikan pembayaran.");
+                }
+            });
+        } catch (error) {
+            console.error("Fetch gagal:", error);
+            alert("Terjadi kesalahan koneksi ke server.");
+        }
     });
 </script>
 @endsection

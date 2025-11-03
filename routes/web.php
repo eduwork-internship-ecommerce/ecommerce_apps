@@ -11,6 +11,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\MidtransController;
+
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -36,6 +38,7 @@ Route::middleware('auth')->group(function () {
     // Mengganti CartController@checkout menjadi CartController@redirectToCheckoutForm
     Route::post('/cart/checkout-redirect', [CartController::class, 'redirectToCheckoutForm'])->name('cart.checkout.redirect');
 
+
     // Routes untuk Order (Halaman Checkout dan Proses Penyimpanan)
     Route::controller(OrderController::class)->prefix('checkout')->name('order.')->group(function () {
         Route::get('/', 'create')->name('create'); // Menampilkan Form Checkout
@@ -44,6 +47,9 @@ Route::middleware('auth')->group(function () {
         // Rute untuk Lanjutkan Pembayaran (dari riwayat pesanan)
     Route::get('/payment/continue/{order_code}', [OrderController::class, 'continuePayment'])
         ->name('payment.continue');
+
+    // Midtrans
+    Route::post('/checkout/pay', [MidtransController::class, 'createTransaction'])->name('checkout.pay');
 });
 
 // Route Admin

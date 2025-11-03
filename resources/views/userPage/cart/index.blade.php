@@ -5,7 +5,9 @@
 @section('content')
 <div class="max-w-6xl mx-auto px-4 py-10">
     <h1 class="text-3xl font-bold mb-8">Keranjang Belanja Anda ({{ $cartItems->count() }} Item)</h1>
-
+    {{-- @php
+    dd($cartItems);
+@endphp --}}
     @if ($cartItems->isEmpty())
     <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
         <p class="font-bold">Keranjang Kosong</p>
@@ -33,7 +35,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-16 w-16">
-                                        <img class="h-16 w-16 rounded object-cover" src="{{ $item->product->image_url ?? 'default-image.png' }}" alt="{{ $item->product->name }}">
+                                        <img class="h-16 w-16 rounded object-cover" src="{{ asset('storage/' . $item->product->image_url) ?? 'default-image.png' }}" alt="{{ $item->product->name }}">
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900">{{ $item->product->name }}</div>
