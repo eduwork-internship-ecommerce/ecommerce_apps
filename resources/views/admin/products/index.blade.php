@@ -21,9 +21,9 @@
                 class="mt-1 w-48 px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Categories</option>
                 @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
+                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -35,9 +35,9 @@
                 class="mt-1 w-48 px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Brands</option>
                 @foreach($brands as $brand)
-                    <option value="{{ $brand }}" {{ request('brand') == $brand ? 'selected' : '' }}>
-                        {{ $brand }}
-                    </option>
+                <option value="{{ $brand }}" {{ request('brand') == $brand ? 'selected' : '' }}>
+                    {{ $brand }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -45,32 +45,33 @@
         {{-- Submit Button --}}
         <div>
             <button type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                Filter
+                class="px-4 py-2 bg-[var(--dark-gold)] text-white rounded-lg shadow hover:bg-[var(--dark-brown)] transition">
+                Cari
             </button>
         </div>
 
         {{-- Reset Filter --}}
         <div>
-            <a href="{{ route('admin.products.index') }}"
-               class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg shadow hover:bg-gray-400 transition">
-               Reset
-            </a>
+            <button type="button"
+                onclick="window.location.href = '{{ route('admin.products.index') }}';"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg shadow hover:bg-gray-400 transition">
+                Reset
+            </button>
         </div>
     </form>
 </div>
 <div class="flex justify-between mb-6 items-center">
     <h1 class="text-3xl font-bold text-gray-800">Products</h1>
-    <a href="{{ route('admin.products.create') }}" 
-       class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+    <a href="{{ route('admin.products.create') }}"
+        class="px-4 py-2 bg-[var(--dark-gold)] text-white rounded-lg shadow hover:bg-[var(--dark-brown)]  transition">
         + Add Product
     </a>
 </div>
 
 @if(session('success'))
-    <div class="mb-4 p-3 bg-green-100 border border-green-300 text-green-800 rounded-lg">
-        {{ session('success') }}
-    </div>
+<div class="mb-4 p-3 bg-green-100 border border-green-300 text-green-800 rounded-lg">
+    {{ session('success') }}
+</div>
 @endif
 
 <div class="overflow-x-auto bg-white rounded-lg shadow">
@@ -93,11 +94,11 @@
                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
                 <td class="px-6 py-4">
                     @if($product->image_url)
-                        <img src="{{ asset('storage/' . $product->image_url) }}" 
-                             alt="{{ $product->name }}" 
-                             class="w-16 h-16 object-cover rounded-md border">
+                    <img src="{{ asset('storage/' . $product->image_url) }}"
+                        alt="{{ $product->name }}"
+                        class="w-16 h-16 object-cover rounded-md border">
                     @else
-                        <span class="text-gray-400 italic">No Image</span>
+                    <span class="text-gray-400 italic">No Image</span>
                     @endif
                 </td>
                 <td class="px-6 py-4 font-medium">{{ $product->name }}</td>
@@ -106,15 +107,15 @@
                 <td class="px-6 py-4">Rp {{ number_format($product->price,0,',','.') }}</td>
                 <td class="px-6 py-4 font-medium">{{ $product->category_id }}</td>
                 <td class="px-6 py-4 text-center space-x-2">
-                    <a href="{{ route('admin.products.edit', $product) }}" 
-                       class="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">
+                    <a href="{{ route('admin.products.edit', $product) }}"
+                        class="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">
                         Edit
                     </a>
                     <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="inline">
                         @csrf @method('DELETE')
-                        <button type="submit" 
-                                onclick="return confirm('Yakin hapus produk ini?')"
-                                class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                        <button type="submit"
+                            onclick="return confirm('Yakin hapus produk ini?')"
+                            class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
                             Delete
                         </button>
                     </form>

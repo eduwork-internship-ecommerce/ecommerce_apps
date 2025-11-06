@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\MidtransController;
+use App\Http\Controllers\Admin\TransactionController;
 
 // route user
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
@@ -43,8 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::controller(OrderController::class)->prefix('checkout')->name('order.')->group(function () {
         Route::get('/', 'create')->name('create'); // Menampilkan Form Checkout
     });
-    Route::get('/order-history', [HistoryController::class,'index'])->name('order.history');
-        // Rute untuk Lanjutkan Pembayaran (dari riwayat pesanan)
+    Route::get('/order-history', [HistoryController::class, 'index'])->name('order.history');
+    // Rute untuk Lanjutkan Pembayaran (dari riwayat pesanan)
     Route::get('/payment/continue/{order_code}', [OrderController::class, 'continuePayment'])
         ->name('payment.continue');
 
@@ -60,6 +61,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('/users', UserController::class);
     Route::resource('/products', AdminProductController::class)->except(['show']);
     Route::resource('/categories', AdminCategoryController::class);
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+
+    Route::put('/transactions/{id}/update-status', [TransactionController::class, 'updateStatus'])->name('transactions.updateStatus');
 });
 
 

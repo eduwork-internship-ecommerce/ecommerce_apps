@@ -40,7 +40,7 @@
                 <a href="{{ route('admin.products.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Produk</a>
                 <a href="{{ route('admin.categories.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Kategori</a>
                 <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Pelanggan</a>
-                <a href="#" class="block px-3 py-2 hover:bg-gray-700 rounded">Transaksi</a>
+                <a href="{{ route('admin.transactions.index') }}" class="block px-3 py-2 hover:bg-gray-700 rounded">Transaksi</a>
                 <a href="#" class="block px-3 py-2 hover:bg-gray-700 rounded">Laporan</a>
             </nav>
 
