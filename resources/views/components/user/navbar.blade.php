@@ -17,10 +17,25 @@
     </div>
 
     <div class="hidden md:flex flex-1 justify-center gap-x-8">
-      <a href="{{route('home')}}" class="font-semibold text-[#D9A24D] border-b-2 border-[#D9A24D]">Beranda</a>
-      <a href="{{route('products.index')}}" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Produk</a>
-      <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Tentang Kami</a>
-      <a href="#" class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Hubungi Kami</a>
+      <a href="{{route('home')}}"
+        class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]
+            @if(Route::is('home')) font-semibold border-b-2 border-[#D9A24D] @endif">
+        Beranda
+      </a>
+
+      <a href="{{route('products.index')}}"
+        class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]
+            @if(Route::is('products.index')) font-semibold border-b-2 border-[#D9A24D] @endif">
+        Produk
+      </a>
+
+      <a href="{{route('about.us')}}"
+        class="text-[#D9A24D] hover:underline hover:text-[#FFF4E7]
+            @if(Route::is('about.us')) font-semibold border-b-2 border-[#D9A24D] @endif">
+        Tentang Kami
+      </a>
+
+   
     </div>
 
     <div class="flex items-center gap-x-4">
@@ -31,17 +46,17 @@
         </svg>
       </a>
       @guest
-        <div class="hidden md:flex items-center gap-x-3">
-            <a href="{{ route('login') }}" class="text-[#D9A24D] font-semibold hover:underline hover:text-[#FFF4E7]">Masuk</a>
-            <a href="{{ route('register') }}" class="text-[#D9A24D] font-semibold hover:underline hover:text-[#FFF4E7]">Daftar</a>
-        </div>
+      <div class="hidden md:flex items-center gap-x-3">
+        <a href="{{ route('login') }}" class="text-[#D9A24D] font-semibold hover:underline hover:text-[#FFF4E7]">Masuk</a>
+        <a href="{{ route('register') }}" class="text-[#D9A24D] font-semibold hover:underline hover:text-[#FFF4E7]">Daftar</a>
+      </div>
       @endguest
       @auth
-        <div class="hidden md:block">
-            <x-user.dropdown-user />
-        </div>
+      <div class="hidden md:block">
+        <x-user.dropdown-user />
+      </div>
       @endauth
-      
+
       <label for="menu-toggle" class="md:hidden cursor-pointer text-[#D9A24D] hover:text-[#FFF4E7]">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -54,32 +69,31 @@
 
   <div id="menu-container" class="hidden absolute top-full left-0 w-full bg-[#2A1E1A] p-6 z-40">
     @auth
-      <div class="mb-4 pb-2 border-b-2 border-[#D9A24D]">
-        <p class="font-bold text-lg text-[#EED2A4]">{{ Auth::user()->name }}</p>
-        <p class="text-sm text-gray-400">{{ Auth::user()->email }}</p>
-      </div>
-      <a href="{{ route('profile.edit') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Profil</a>
-      <a href="{{ route('order.history') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Riwayat Pesanan</a>
-      <form method="POST" action="{{ route('logout') }}" class="block py-2">
-        @csrf
-        <button type="submit" class="w-full text-left font-semibold text-red-500 hover:text-red-400 transition-colors duration-200">
-          Keluar
-        </button>
-      </form>
-      
-      <div class="border-t border-[#D9A24D] my-4"></div>
+    <div class="mb-4 pb-2 border-b-2 border-[#D9A24D]">
+      <p class="font-bold text-lg text-[#EED2A4]">{{ Auth::user()->name }}</p>
+      <p class="text-sm text-gray-400">{{ Auth::user()->email }}</p>
+    </div>
+    <a href="{{ route('profile.edit') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Profil</a>
+    <a href="{{ route('order.history') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Riwayat Pesanan</a>
+    <form method="POST" action="{{ route('logout') }}" class="block py-2">
+      @csrf
+      <button type="submit" class="w-full text-left font-semibold text-red-500 hover:text-red-400 transition-colors duration-200">
+        Keluar
+      </button>
+    </form>
+
+    <div class="border-t border-[#D9A24D] my-4"></div>
     @endauth
-    
+
     @guest
-      <div class="mb-4 pb-4 border-b border-[#D9A24D]">
-        <a href="{{ route('login') }}" class="block py-2 font-semibold text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Masuk</a>
-        <a href="{{ route('register') }}" class="block py-2 font-semibold text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Daftar</a>
-      </div>
+    <div class="mb-4 pb-4 border-b border-[#D9A24D]">
+      <a href="{{ route('login') }}" class="block py-2 font-semibold text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Masuk</a>
+      <a href="{{ route('register') }}" class="block py-2 font-semibold text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Daftar</a>
+    </div>
     @endguest
 
     <a href="{{ route('home') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Beranda</a>
     <a href="{{ route('products.index') }}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Produk</a>
-    <a href="#" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Tentang Kami</a>
-    <a href="#" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#EED2A4]">Hubungi Kami</a>
+    <a href="{{route('about.us')}}" class="block py-2 text-[#D9A24D] hover:underline hover:text-[#FFF4E7]">Tentang Kami</a>
   </div>
 </nav>

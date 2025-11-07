@@ -18,7 +18,9 @@ use App\Http\Controllers\Admin\TransactionController;
 Route::get('/', [ProductDummyController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
-
+Route::get('/tentang-kami', function () {
+    return view('userPage.about-us.index'); // Memuat file about-us.blade.php
+})->name('about.us');
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
