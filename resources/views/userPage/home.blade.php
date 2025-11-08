@@ -27,6 +27,6 @@ $heroSlides = [
 
 @section('content')
         <x-user.hero :slides="$heroSlides" />
-        <x-product-card :paginatedProducts="$paginatedProducts" />
+        <x-product-card :products="$products" />
         <x-user.contact-us />
     @endsection

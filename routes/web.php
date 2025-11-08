@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductDummyController;
+use App\Http\Controllers\ProductCardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\CartController;
@@ -15,7 +15,7 @@ use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\Admin\TransactionController;
 
 // route user
-Route::get('/', [ProductDummyController::class, 'index'])->name('home');
+Route::get('/', [ProductCardController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/tentang-kami', function () {
