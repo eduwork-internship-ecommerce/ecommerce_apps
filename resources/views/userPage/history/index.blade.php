@@ -10,7 +10,7 @@
 <div class="max-w-6xl mx-auto px-4 py-10">
     <h1 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-2">Riwayat Pesanan Anda</h1>
 
-    @if (empty($orders))
+    @if ($orders->isEmpty())
     <div class="text-center p-10 bg-white rounded-lg shadow-lg">
         <p class="text-xl text-gray-600">Anda belum memiliki riwayat pesanan.</p>
         <a href="/" class="mt-4 inline-block px-6 py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition">Mulai Belanja</a>
@@ -18,16 +18,15 @@
     @else
     {{-- Menggunakan Alpine.js untuk state modal --}}
     {{-- Pastikan Alpine.js sudah di-load di layout utama --}}
-    <div x-data="{ showModal: false, selectedOrder: null, formatStatus: window.formatStatus, formatDate: window.formatDate }">
+    <div x-data="{ showModal: false, selectedOrder: null, formatStatus: window.formatStatus, formatDate: window.formatDate, confirmPayment: window.confirmPayment }">
 
         {{-- Daftar Kartu Pesanan --}}
         <div class="space-y-6">
             @foreach ($orders as $order)
             @php
-            // Ambil item pertama untuk ditampilkan di ringkasan card
-            $firstItem = $order['order_items'][0] ?? null;
-            // Cek apakah tombol bayar harus ditampilkan
-            $showPaymentButton = ($order['status'] === 'pending' || $order['payment_status'] === 'unpaid');
+            // Cek apakah tombol Konfirmasi harus ditampilkan: 
+            // Tampilkan jika status BUKAN 'completed' DAN payment_status BUKAN 'paid'
+            $showConfirmationButton = ($order['status'] !== 'completed' && $order['payment_status'] !== 'paid');
             @endphp
             <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 mb-4">
@@ -57,14 +56,14 @@
                     </div>
                 </div>
 
-                {{-- Tombol Detail Transaksi --}}
                 {{-- Tombol Aksi --}}
                 <div class="flex justify-end space-x-3 pt-2 border-t">
-                    @if ($showPaymentButton)
-                    {{-- Tombol Lanjutkan Pembayaran (Hanya jika pending/unpaid) --}}
+                     @if ($showConfirmationButton)
+                    {{-- TOMBOL BARU: KONFIRMASI PESANAN (Mengarahkan ke Controller untuk WA redirect) --}}
+                    {{-- Menggunakan <a> untuk redirect ke route Laravel --}}
                     <a href="{{ route('payment.continue', $order->code) }}"
-                        class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                        Lanjutkan Pembayaran
+                        class="bg-blue-600 text-white text-center font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Konfirmasi Pembayaran
                     </a>
                     @endif
 
@@ -78,8 +77,13 @@
             </div>
             @endforeach
         </div>
+        
+        {{-- Pagination --}}
+        <div class="mt-8">
+            {{ $orders->links() }}
+        </div>
 
-        {{-- Modal Popup Detail Transaksi --}}
+        {{-- Modal Popup Detail Transaksi (Tidak ada perubahan di sini, hanya ditempelkan kembali untuk kelengkapan) --}}
         <div
             x-show="showModal"
             x-cloak
@@ -100,8 +104,8 @@
                     class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto z-50 transform transition-all overflow-hidden"
                     @click.away="showModal = false">
                     {{-- Header --}}
-                    <div class="flex justify-between items-center p-5 border-b bg-yellow-100">
-                        <h3 class="text-xl font-bold text-yellow-800">Detail Pesanan: <span x-text="selectedOrder ? selectedOrder.code : ''"></span></h3>
+                    <div class="flex justify-between items-center p-5 border-b bg-blue-50">
+                        <h3 class="text-xl font-bold text-gray-800">Detail Pesanan: <span x-text="selectedOrder ? selectedOrder.code : ''"></span></h3>
                         <button @click="showModal = false" class="text-gray-400 hover:text-gray-700">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -124,6 +128,14 @@
                             </p>
                             <p><span class="font-medium">Metode Pembayaran:</span> <span x-text="selectedOrder.payment_method"></span></p>
                             <p><span class="font-medium">Tanggal Pesan:</span> <span x-text="formatDate(selectedOrder.placed_at)"></span></p>
+                        </div>
+                        
+                        {{-- Detail Alamat (Baru) --}}
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Alamat Pengiriman</h4>
+                        <div x-show="selectedOrder.shipping_address" class="space-y-1 text-sm mb-6 bg-gray-50 p-3 rounded-lg">
+                            <p><span class="font-medium">Penerima:</span> <span x-text="selectedOrder.shipping_address.recipient_name"></span></p>
+                            <p><span class="font-medium">Telepon:</span> <span x-text="selectedOrder.shipping_address.phone"></span></p>
+                            <p><span class="font-medium">Alamat:</span> <span x-text="`${selectedOrder.shipping_address.address_line}, ${selectedOrder.shipping_address.city}, ${selectedOrder.shipping_address.province} (${selectedOrder.shipping_address.postal_code})`"></span></p>
                         </div>
 
                         {{-- Detail Produk --}}

@@ -24,16 +24,24 @@
             'shipped' => 'bg-indigo-100 text-indigo-800',
             'completed' => 'bg-green-100 text-green-800',
             'canceled' => 'bg-red-100 text-red-800',
+            'paid' => 'bg-green-100 text-green-800', // Status pembayaran
+            'unpaid' => 'bg-red-100 text-red-800',   // Status pembayaran
         ];
-        return $map[$status] ?? 'bg-gray-100 text-gray-800';
+        // Menggunakan status utama, jika tidak ada, fallback ke status umum
+        return $map[$status] ?? 'bg-gray-100 text-gray-800'; 
     }
 
     function formatDate($timestamp) {
         try {
             // Carbon harus diinstal/tersedia
-            return \Carbon\Carbon::parse($timestamp)->isoFormat('D MMMM YYYY, HH:mm');
+            // Jika Carbon tidak tersedia, gunakan fungsi PHP biasa
+            if (class_exists(\Carbon\Carbon::class)) {
+                 return \Carbon\Carbon::parse($timestamp)->isoFormat('D MMMM YYYY, HH:mm');
+            }
+             // Fallback to simple PHP date formatting
+            return date('d M Y, H:i', strtotime($timestamp));
         } catch (\Exception $e) {
-            return $timestamp; // Fallback jika Carbon tidak tersedia
+            return $timestamp; // Fallback jika tanggal tidak valid
         }
     }
 @endphp
@@ -42,6 +50,7 @@
 <script>
     // Memastikan fungsi PHP formatStatus dan formatDate tersedia di scope global untuk Alpine.js
     window.formatStatus = function(status) {
+        if (!status) return 'Unknown';
         const map = {
             'pending': 'Menunggu Pembayaran',
             'processing': 'Diproses',

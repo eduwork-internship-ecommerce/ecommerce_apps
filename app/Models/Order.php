@@ -44,6 +44,8 @@ class Order extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'status' => 'string',
+        'payment_status' => 'string',
         // Kolom DECIMAL
         'subtotal' => 'float',
         'shipping_cost' => 'float',
@@ -72,6 +74,10 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+    public function shippingAddress()
+    {
+        return $this->hasOne(OrderShippingAddress::class);
     }
     // Anda mungkin perlu menambahkan relasi ke OrderItem (jika ada) dan OrderAddress (jika terpisah)
 }

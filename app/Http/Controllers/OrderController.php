@@ -13,6 +13,13 @@ use Illuminate\Http\RedirectResponse;
 class OrderController extends Controller
 {
     /**
+     * Nomor WhatsApp tujuan untuk konfirmasi/pemesanan.
+     * Ganti dengan nomor WhatsApp admin yang benar.
+     * @var string
+     */
+    protected $adminPhoneNumber = '6289513822017'; // Nomor tujuan WhatsApp (WA Admin/CS)
+
+    /**
      * Menampilkan formulir checkout (alamat pengiriman, metode pengiriman, ringkasan).
      */
     public function create()
@@ -31,7 +38,6 @@ class OrderController extends Controller
         });
 
         // 2. Ambil data alamat pengguna yang sudah tersimpan (jika ada)
-        // Asumsikan Anda memiliki relasi atau tabel alamat terpisah (UserAddress)
         // $userAddresses = Auth::user()->addresses; 
 
         // 3. Data Kurir/Layanan (Contoh Sederhana)
@@ -49,8 +55,8 @@ class OrderController extends Controller
     }
 
     /**
-     * Mengambil data pesanan terakhir yang sudah tersimpan di database, 
-     * lalu mengarahkan ke link WhatsApp untuk pembayaran.
+     * Mengarahkan pengguna ke link WhatsApp setelah checkout berhasil dibuat.
+     * Ini digunakan setelah pesanan *baru* dibuat dan pengguna dialihkan ke sini.
      */
     public function processCheckout(): RedirectResponse
     {
@@ -67,53 +73,14 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Pesanan belum ditemukan atau item pesanan kosong.');
         }
 
-        // 3. Bangun pesan WhatsApp menggunakan data dari Order dan OrderItem yang sudah tersimpan
-        $orderMessage = "Halo, saya ingin memesan produk dari K-Pop Mart.\n\n"
-            . "Kode Pesanan: " . $order->code . "\n"
-            . "Rincian Pesanan:\n";
-
-        // Loop melalui Order Items yang sudah tersimpan
-        foreach ($order->orderItems as $item) {
-            // Menggunakan snapshot data dari order item
-            $productName = $item->product_name_snapshot ?? 'Produk Tidak Diketahui';
-            $itemTotal = $item->subtotal;
-
-            // Tambahkan detail produk ke pesan WhatsApp
-            $orderMessage .= "• " . $productName . " x " . $item->quantity . " = Rp " . number_format($itemTotal, 0, ',', '.') . "\n";
-        }
-
-        // 4. Lanjutkan dengan pembuatan pesan WhatsApp menggunakan data Order (menggunakan kolom DB: subtotal, shipping_cost, tax_total, grand_total)
-        $orderMessage .= "\n----------------------------------\n"
-            . "Subtotal: Rp " . number_format($order->subtotal, 0, ',', '.') . "\n"
-            . "Biaya Pengiriman: Rp " . number_format($order->shipping_cost, 0, ',', '.') . "\n";
-
-        $discountTotal = $order->discount_total ?? 0;
-        if ($discountTotal > 0) {
-            $orderMessage .= "Diskon: - Rp " . number_format($discountTotal, 0, ',', '.') . "\n";
-        }
-
-        $taxAmount = $order->tax_total ?? 0;
-        if ($taxAmount > 0) {
-            // Anggap tax rate tidak perlu ditampilkan jika sudah ada nilai tax_total
-            $orderMessage .= "Pajak: Rp " . number_format($taxAmount, 0, ',', '.') . "\n";
-        }
-
-        $finalTotal = $order->grand_total; // Ambil total akhir dari kolom grand_total
-
-        $orderMessage .= "Total Pembayaran: Rp " . number_format($finalTotal, 0, ',', '.') . "\n\n"
-            . "Mohon info ketersediaan stok dan detail pembayaran. Terima kasih.";
-
-        $encodedMessage = urlencode($orderMessage);
-        $phoneNumber = '6289513822017'; // Nomor tujuan
-        $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
-
-        return redirect()->away($whatsappUrl);
+        // 3. Panggil fungsi helper untuk membangun pesan dan melakukan redirect
+        return $this->buildWhatsappRedirect($order, 'memesan produk');
     }
 
 
     /**
-     * Mengarahkan pengguna ke link WhatsApp untuk melanjutkan pembayaran
-     * pesanan yang sudah ada (digunakan oleh tombol "Lanjutkan Pembayaran").
+     * Mengarahkan pengguna ke link WhatsApp untuk melanjutkan/mengkonfirmasi pembayaran
+     * pesanan yang sudah ada (digunakan oleh tombol "Konfirmasi Pesanan" di riwayat).
      *
      * @param string $order_code Kode pesanan (misalnya ORD-1700...)
      * @return RedirectResponse
@@ -131,45 +98,69 @@ class OrderController extends Controller
         }
 
         // 2. Pastikan status pesanan masih 'pending' atau 'unpaid'
-        if ($order->status !== 'pending' && $order->payment_status !== 'unpaid') {
+        // Logika ini penting untuk mencegah konfirmasi berulang pada pesanan yang sudah selesai/dibayar.
+        if ($order->status === 'completed' || $order->payment_status === 'paid') {
             return redirect()->route('history.index')->with('warning', 'Pesanan ini sudah dibayar atau diproses lebih lanjut.');
         }
 
-        // 3. Bangun ulang pesan WhatsApp berdasarkan data pesanan yang sudah ada
-        $orderMessage = "Halo, saya ingin melanjutkan pembayaran untuk pesanan saya.\n\n"
-            . "Kode Pesanan: " . $order->code . "\n"
-            . "Rincian Pesanan:\n";
+        // 3. Panggil fungsi helper untuk membangun pesan konfirmasi pembayaran
+        return $this->buildWhatsappRedirect($order, 'melanjutkan pembayaran');
+    }
 
-        // Loop melalui Order Items yang sudah tersimpan
+    /**
+     * Helper function untuk membangun pesan WhatsApp dan melakukan redirect.
+     * * @param Order $order Objek Order yang akan dikirim
+     * @param string $context Konteks pesan (misalnya: 'memesan produk', 'melanjutkan pembayaran')
+     * @return RedirectResponse
+     */
+    protected function buildWhatsappRedirect(Order $order, string $context): RedirectResponse
+    {
+        // Inisialisasi pesan
+        $orderMessage = "";
+
+        // 1. Header Pesan berdasarkan konteks
+
+        $orderMessage .= "Halo Admin, saya telah *berhasil melakukan pembayaran* untuk pesanan ini.\n\n"
+            . "Mohon bantuannya untuk dilakukan *verifikasi dan proses lebih lanjut*.\n\n"
+            . "Berikut adalah detail pesanan yang saya bayar:\n\n";
+
+
+
+        // 2. Detail Pesanan (Ringkasan Penting)
+        $orderMessage .= "*Kode Pesanan:* " . $order->code . "\n";
+        $orderMessage .= "*Total Pembayaran:* Rp " . number_format($order->grand_total, 0, ',', '.') . "\n";
+        $orderMessage .= "Rincian Produk:\n";
+
+        // 3. Loop Order Items
         foreach ($order->orderItems as $item) {
             $productName = $item->product_name_snapshot ?? 'Produk Tidak Diketahui';
             $itemTotal = $item->subtotal;
             $orderMessage .= "• " . $productName . " x " . $item->quantity . " = Rp " . number_format($itemTotal, 0, ',', '.') . "\n";
         }
 
-        // Rincian total (Menggunakan nama kolom: subtotal, shipping_cost, tax_total, grand_total)
-        $orderMessage .= "\n----------------------------------\n"
-            . "Subtotal: Rp " . number_format($order->subtotal, 0, ',', '.') . "\n"
-            . "Biaya Pengiriman: Rp " . number_format($order->shipping_cost, 0, ',', '.') . "\n";
+        // 4. Detail Biaya Lain
+        $orderMessage .= "\n----------------------------------\n";
+        $orderMessage .= "Subtotal Barang: Rp " . number_format($order->subtotal, 0, ',', '.') . "\n";
+        $orderMessage .= "Biaya Pengiriman: Rp " . number_format($order->shipping_cost, 0, ',', '.') . "\n";
 
-        // Diskon (jika ada)
         $discountTotal = $order->discount_total ?? 0;
         if ($discountTotal > 0) {
             $orderMessage .= "Diskon: - Rp " . number_format($discountTotal, 0, ',', '.') . "\n";
         }
 
-        // Pajak
-        if ($order->tax_total > 0) {
-            $orderMessage .= "Pajak: Rp " . number_format($order->tax_total, 0, ',', '.') . "\n";
+        $taxAmount = $order->tax_total ?? 0;
+        if ($taxAmount > 0) {
+            $orderMessage .= "Pajak: Rp " . number_format($taxAmount, 0, ',', '.') . "\n";
         }
 
-        $orderMessage .= "Total Pembayaran: Rp " . number_format($order->grand_total, 0, ',', '.') . "\n\n"
-            . "Mohon konfirmasi detail pembayaran. Terima kasih.";
 
-        // 4. Redirect ke WhatsApp
+        $orderMessage .= "\nTerima kasih atas bantuannya.";
+
+
+
+        // 6. Redirect ke WhatsApp
         $encodedMessage = urlencode($orderMessage);
-        $phoneNumber = '6289513800000'; // Nomor tujuan WhatsApp
-        $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
+        $whatsappUrl = "https://wa.me/{$this->adminPhoneNumber}?text={$encodedMessage}";
 
         return redirect()->away($whatsappUrl);
     }
