@@ -1,61 +1,143 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+| <a href="https://github.com/laravel/framework/actions">Build Status</a> | <a href="https://packagist.org/packages/laravel/framework">Total Downloads</a> | <a href="https://packagist.org/packages/laravel/framework">Latest Stable Version</a> | <a href="https://packagist.org/packages/laravel/framework">License</a> |
+| :---: | :---: | :---: | :---: |
 </p>
 
-## About Laravel
+# 🍯 Proyek E-Commerce HoneyMart
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**HoneyMart** adalah solusi *Fullstack E-Commerce* modern yang berfokus pada penjualan produk madu murni. Aplikasi ini dibangun dengan mengutamakan performa, kemudahan navigasi bagi pengguna, dan proses transaksi yang terintegrasi penuh.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tumpukan Teknologi & Infrastruktur
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Proyek ini dikembangkan menggunakan arsitektur modern.
 
-## Learning Laravel
+| Kategori | Teknologi | Deskripsi Implementasi |
+| :--- | :--- | :--- |
+| **Backend Framework** | **Laravel** | Inti dari sistem, mengelola routing, logika bisnis, ORM (Eloquent), dan API. |
+| **Frontend Styling** | **Tailwind CSS** | Digunakan untuk desain responsif, cepat, dan modern. |
+| **Payment Gateway** | **Midtrans** | Integrasi pembayaran pihak ketiga yang mendukung berbagai metode pembayaran. |
+| **Email Service** | **SMTP** | Implementasi SMTP untuk mengirim email konfirmasi registrasi akun. |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ✨ Fitur Utama (Core Features)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Pengalaman Pengguna
+* **Halaman Beranda yang Atraktif:** Menampilkan *hero section* yang menarik.
+* **Sistem Filter Produk:** Memudahkan pengguna mencari produk dengan *filter* berdasarkan **Brand** dan **Kategori** di Halaman Produk.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Manajemen Transaksi
+* **Integrated Checkout:** Proses *checkout* terintegrasi dengan Midtrans, memastikan transaksi yang aman.
+* **Verifikasi Pembayaran Manual:** Status pembayaran disetujui setelah konfirmasi dari Admin (via WhatsApp/sistem).
+* **Riwayat Pesanan:** Pengguna dapat melihat detail dan status pesanan mereka.
 
-## Laravel Sponsors
+### 3. Otentikasi & Keamanan
+* **Verifikasi Akun Otomatis:** Setiap pengguna baru wajib memverifikasi email yang dikirimkan melalui **SMTP** saat pendaftaran.
+* **Multi-Role:** Pembagian akses yang jelas antara **Admin** (Pengelola) dan **User** (Pelanggan).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 💻 Struktur Halaman
 
-### Premium Partners
+### A. Dashboard Admin
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Dashboard ini memberikan kendali penuh kepada pengelola toko dengan tampilan ringkasan data kunci.
 
-## Contributing
+| # | Menu | Deskripsi |
+| :---: | :--- | :--- |
+| 1 | **Dasbor** | Ringkasan statistik cepat (Produk: 4, Kategori: 6, Total Stok: 53, Total Transaksi: 9). |
+| 2 | **Produk & Kategori** | Manajemen Inventori (CRUD) dan klasifikasi produk. |
+| 3 | **Pelanggan** | Melihat dan mengelola data pengguna terdaftar. |
+| 4 | **Transaksi** | Detail dan pengelolaan semua pesanan yang masuk. |
+| 5 | **Laporan** | Melihat laporan penjualan dan aktivitas toko. |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### B. Halaman Pengguna
 
-## Code of Conduct
+Halaman yang berorientasi pada transaksi dan informasi produk.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| # | Halaman | Deskripsi |
+| :---: | :--- | :--- |
+| 1 | **Beranda / Tentang Kami** | Informasi produk dan perusahaan. |
+| 2 | **Produk** | Katalog lengkap dengan opsi filter dan pencarian. |
+| 3 | **Keranjang Belanja** | Mengelola item sebelum proses *checkout*. |
+| 4 | **Riwayat Pesanan** | Menampilkan semua pesanan pengguna, termasuk kode transaksi dan status. |
 
-## Security Vulnerabilities
+## 💾 Desain Database (Skema Utama)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Skema database menggunakan struktur relasional. Tabel utama meliputi `orders`, `order_items`, dan `order_shipping_addresses`.
 
-## License
+### 1. Tabel `orders` (Tabel Transaksi Utama)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Tabel ini menyimpan data transaksi dasar.
+
+| Kolom | Datatype | Keterangan |
+| :--- | :--- | :--- |
+| `id` | `BIGINT` | ID Pesanan Unik (PK) |
+| `user_id` | `BIGINT` | Pemilik pesanan (FK ke `users`) |
+| `code` | `VARCHAR` | Kode Unik Pesanan |
+| `status` | `ENUM` | Status Proses (`pending`, `completed`, `processing`, `shipped`, `canceled`) |
+| `grand_total` | `DECIMAL(12,2)` | Total Akhir Pembayaran |
+| `payment_method` | `VARCHAR` | Metode Pembayaran |
+| `payment_status` | `ENUM` | Status Pembayaran (`unpaid`, `paid`) |
+
+### 2. Tabel `order_items` (Detail Item Pesanan)
+
+Mencatat detail setiap produk yang dibeli pada satu pesanan.
+
+| Kolom | Datatype | Keterangan |
+| :--- | :--- | :--- |
+| `id` | `BIGINT` | ID Unik |
+| `order_id` | `BIGINT` | Relasi ke Pesanan Utama |
+| `product_id` | `BIGINT` | Produk yang dibeli |
+| `product_name_snapshot` | `VARCHAR(255)` | Nama produk saat dibeli |
+| `price_snapshot` | `DECIMAL(12,2)` | Harga per unit saat dibeli |
+| `quantity` | `INT(11)` | Jumlah item |
+| `subtotal` | `DECIMAL(12,2)` | Total harga untuk item ini |
+
+### 3. Tabel `order_shipping_addresses` (Detail Alamat Pengiriman)
+
+Mencatat alamat pengiriman spesifik untuk pesanan tersebut.
+
+| Kolom | Datatype | Keterangan |
+| :--- | :--- | :--- |
+| `id` | `BIGINT` | ID Unik |
+| `order_id` | `BIGINT` | Relasi ke Pesanan Utama |
+| `recipient_name` | `VARCHAR(255)` | Nama Penerima |
+| `address_line` | `VARCHAR(255)` | Alamat Lengkap |
+| `city` | `VARCHAR(255)` | Kota |
+| `province` | `VARCHAR(255)` | Provinsi |
+| `postal_code` | `VARCHAR(255)` | Kode Pos |
+
+## 🚀 Panduan Instalasi
+
+Untuk menjalankan proyek ini secara lokal:
+
+1. **Clone Repositori:**
+    ```bash
+    git clone [https://www.andarepository.com/](https://www.andarepository.com/)
+    cd HoneyMart
+    ```
+
+2. **Instal Dependensi:**
+    ```bash
+    composer install
+    npm install
+    ```
+
+3. **Konfigurasi Lingkungan:**
+    * Duplikat file `.env.example` menjadi `.env`.
+    * Atur koneksi database, kredensial **SMTP**, dan **Midtrans API Key**.
+
+4. **Migrasi Database:**
+    ```bash
+    php artisan migrate --seed
+    ```
+
+5. **Kompilasi Assets:**
+    ```bash
+    npm run dev
+    ```
+
+6. **Jalankan Server:**
+    ```bash
+    php artisan serve
+    ```
+```eof
