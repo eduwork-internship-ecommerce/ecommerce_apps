@@ -17,7 +17,7 @@ public function index(Request $request)
 {
     // Mendapatkan query dasar dari model
     // UBAH: Gunakan with('items') untuk eagerly load order_items
-    $query = Order::with('user', 'orderItems'); 
+    $query = Order::with('user', 'orderItems', 'shippingAddress'); 
 
     // 1. Filter Pencarian (Code atau User ID)
     // ... (Logika filter tetap sama)

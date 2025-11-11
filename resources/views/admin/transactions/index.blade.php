@@ -129,54 +129,114 @@
 </button>
                 </td>
 {{-- MODAL DETAIL TRANSAKSI BARU --}}
-            <div id="detailModal{{ $order->id }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-900 bg-opacity-50">
-                <div class="relative w-full max-w-2xl max-h-full">
-                    <div class="relative bg-white rounded-lg shadow">
-                        <div class="flex items-start justify-between p-4 border-b rounded-t bg-gray-50">
-                            <h3 class="text-xl font-semibold text-gray-900">
-                                Detail Transaksi: {{ $order->code }}
-                            </h3>
-                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="detailModal{{ $order->id }}">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                            </button>
-                        </div>
-                        
-                        <div class="p-6 space-y-6">
-                            {{-- Ringkasan Transaksi --}}
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div><p class="text-gray-500">Kode Transaksi:</p><p class="font-medium">{{ $order->code }}</p></div>
-                                <div><p class="text-gray-500">Grand Total:</p><p class="font-medium text-green-600">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</p></div>
-                                <div><p class="text-gray-500">Status Bayar:</p><p class="font-medium">{{ Str::title($order->payment_status) }}</p></div>
-                                <div><p class="text-gray-500">Status Pesanan:</p><p class="font-medium">{{ Str::title($order->status) }}</p></div>
-                            </div>
-                            
-                            <h4 class="text-lg font-semibold border-b pb-2">Item Pembelian</h4>
-                            
-                            {{-- Daftar Item yang Dibeli (dari order_items) --}}
-                            <div class="space-y-3 max-h-60 overflow-y-auto">
-                                @forelse($order->orderItems as $item)
-                                <div class="flex justify-between items-start border-b pb-2">
-                                    <div class="text-sm">
-                                        <p class="font-medium">{{ $item->product_name_snapshot }}</p>
-                                        <p class="text-gray-500">{{ $item->quantity }} x Rp{{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
-                                    </div>
-                                    <div class="text-right font-semibold text-sm">
-                                        Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                    </div>
-                                </div>
-                                @empty
-                                <p class="text-gray-500 text-center">Tidak ada item yang terkait dengan transaksi ini.</p>
-                                @endforelse
-                            </div>
+<div id="detailModal{{ $order->id }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-900 bg-opacity-50">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="flex items-start justify-between p-4 border-b rounded-t bg-gray-50">
+                <h3 class="text-xl font-semibold text-gray-900">
+                    Detail Transaksi: {{ $order->code }}
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="detailModal{{ $order->id }}">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                
+                {{-- Detail Pelanggan & Pengiriman --}}
+                <h4 class="text-lg font-semibold border-b pb-2 text-gray-700">Informasi Pelanggan & Pengiriman</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <p class="text-gray-500 font-bold mb-1">Pelanggan</p>
+                        <p class="font-medium">{{ $order->user->name ?? 'Pengguna Tidak Ditemukan' }}</p>
+                        <p class="text-gray-500">{{ $order->user->email ?? '-' }}</p>
+                    </div>
 
+                    @if($order->shippingAddress)
+                    <div>
+                        <p class="text-gray-500 font-bold mb-1">Alamat Pengiriman</p>
+                        <p class="font-medium">{{ $order->shippingAddress->recipient_name }} ({{ $order->shippingAddress->phone }})</p>
+                        <p class="text-gray-600">{{ $order->shippingAddress->address_line }}, {{ $order->shippingAddress->city }}, {{ $order->shippingAddress->province }} - {{ $order->shippingAddress->postal_code }}</p>
+                    </div>
+                    @else
+                    <div>
+                        <p class="text-gray-500">Alamat pengiriman tidak tersedia.</p>
+                    </div>
+                    @endif
+                </div>
+
+                <hr class="my-4">
+
+                {{-- Ringkasan Transaksi Utama --}}
+                <h4 class="text-lg font-semibold border-b pb-2 text-gray-700">Ringkasan Transaksi</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><p class="text-gray-500">Kode Transaksi:</p><p class="font-medium">{{ $order->code }}</p></div>
+                    <div><p class="text-gray-500">Status Pembayaran:</p><p class="font-medium text-yellow-600">{{ Str::title($order->payment_status) }}</p></div>
+                    <div><p class="text-gray-500">Tanggal Dibuat:</p><p class="font-medium">{{ $order->created_at->format('d M Y H:i') }}</p></div>
+                    <div><p class="text-gray-500">Status Pesanan:</p><p class="font-medium text-blue-600">{{ Str::title($order->status) }}</p></div>
+                </div>
+
+                <hr class="my-4">
+                
+                <h4 class="text-lg font-semibold border-b pb-2 text-gray-700">Rincian Item & Biaya</h4>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    {{-- Daftar Item yang Dibeli (dari order_items) --}}
+                    <div class="col-span-2">
+                        <p class="text-gray-500 font-bold mb-2 text-sm">Item Pembelian</p>
+                        <div class="space-y-3 max-h-48 overflow-y-auto pr-2 border border-gray-100 p-2 rounded-lg">
+                            @forelse($order->orderItems as $item)
+                            <div class="flex justify-between items-start">
+                                <div class="text-sm">
+                                    <p class="font-medium">{{ $item->product_name_snapshot }}</p>
+                                    <p class="text-gray-500 text-xs">{{ $item->quantity }} x Rp{{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="text-right font-semibold text-sm">
+                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            @empty
+                            <p class="text-gray-500 text-center text-sm">Tidak ada item yang terkait dengan transaksi ini.</p>
+                            @endforelse
                         </div>
-                        <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
-                            <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10" data-modal-toggle="detailModal{{ $order->id }}">Tutup</button>
+                    </div>
+
+                    {{-- Ringkasan Biaya --}}
+                    <div class="col-span-2 mt-4 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <p class="text-gray-600">Subtotal Barang:</p>
+                            <p class="font-medium">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <p class="text-gray-600">Biaya Pengiriman:</p>
+                            <p class="font-medium">Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</p>
+                        </div>
+                        @if ($order->discount_total > 0)
+                        <div class="flex justify-between">
+                            <p class="text-red-500">Diskon:</p>
+                            <p class="font-medium text-red-500">- Rp{{ number_format($order->discount_total, 0, ',', '.') }}</p>
+                        </div>
+                        @endif
+                        @if ($order->tax_total > 0)
+                        <div class="flex justify-between">
+                            <p class="text-gray-600">Pajak (PPN):</p>
+                            <p class="font-medium">Rp{{ number_format($order->tax_total, 0, ',', '.') }}</p>
+                        </div>
+                        @endif
+                        <div class="flex justify-between pt-2 border-t border-gray-200">
+                            <p class="text-lg font-bold">GRAND TOTAL:</p>
+                            <p class="text-xl font-bold text-green-600">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</p>
                         </div>
                     </div>
                 </div>
+
             </div>
-            </tr>
+            <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
+                <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10" data-modal-toggle="detailModal{{ $order->id }}">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
             {{-- MODAL UPDATE STATUS PEMBAYARAN & PESANAN --}}
             <div id="updateStatusModal{{ $order->id }}" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-900 bg-opacity-50">
                 <div class="relative w-full max-w-lg max-h-full">

@@ -113,11 +113,11 @@
         </div>
 
         <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold mb-2">Laporan</h2>
+            <h2 class="text-xl font-semibold mb-2">Transaksi</h2>
             <p>Lihat laporan penjualan & aktivitas.</p>
-            <a href="#"
+            <a href="{{ route('admin.transactions.index') }}"
                 class="inline-block mt-4 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
-                Lihat Laporan
+                Lihat Transaksi
             </a>
         </div>
     </div>
